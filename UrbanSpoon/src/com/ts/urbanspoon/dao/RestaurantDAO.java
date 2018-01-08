@@ -125,7 +125,7 @@ public class RestaurantDAO {
 		return restaurant;
 	}
 	
-	public boolean updateLogoAddress(int restaurantId, String fileName) {
+	public boolean updateLogoAddress(int restaurantId, String fileName) throws UrbanspoonException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {

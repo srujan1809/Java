@@ -23,7 +23,7 @@ import com.ts.urbanspoon.dto.User;
 import com.ts.urbanspoon.exception.UrbanspoonException;
 
 public class UrbanSpoonService {
-	private static final String IMAGESLOCATION = "D:\\Urbanspoon\\Workspace\\Urbanspoon\\WebContent\\images";
+	private static final String IMAGESLOCATION = "F:\\P_N\\Workspace\\Urbanspoon\\WebContent\\Images";
 
 	public UrbanSpoonService() {
 		
@@ -112,7 +112,7 @@ public class UrbanSpoonService {
 		return true;
   }
    
- private static boolean storeImage(FileItem fileItem, String string, String string2) {
+ private static boolean storeImage(FileItem fileItem, String imageType, String fileName) throws UrbanspoonException {
 	 if (null != fileItem) {
 			try {
 				String filePath = IMAGESLOCATION + "\\" + imageType + "\\" + fileName;
