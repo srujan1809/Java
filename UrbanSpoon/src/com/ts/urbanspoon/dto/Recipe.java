@@ -1,0 +1,52 @@
+package com.ts.urbanspoon.dto;
+
+public class Recipe {
+private int id;
+private String name;
+private String description;
+private boolean veg;
+
+public Recipe() {
+	// TODO Auto-generated constructor stub
+}
+
+public int getId() {
+	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
+}
+
+public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
+
+public String getDescription() {
+	return description;
+}
+
+public void setDescription(String description) {
+	this.description = description;
+}
+
+public boolean isVeg() {
+	return veg;
+}
+
+public void setVeg(boolean veg) {
+	this.veg = veg;
+}
+
+@Override
+public String toString() {
+	return "Recipe [id=" + id + ", name=" + name + ", description=" + description + ", veg=" + veg + "]";
+}
+
+
+	 
+}
