@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.ts.urbanspoon.dto.Restaurant;
@@ -34,54 +36,61 @@ public class UrbanSpoonController extends HttpServlet {
 		request.getRequestDispatcher("home.jsp").forward(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-		String s = request.getParameter("action");		
-		if(s.equalsIgnoreCase("user_registration")){	
-			try {		
-				User u = UrbanSpoonService.insertUser(request,response);
-				System.out.println(u.getId());			
-			} catch (UrbanspoonException e) {
-				e.printStackTrace();
-			}
-		}
-		if(s.equalsIgnoreCase("login")){
-			if(request.getParameter("loginAs").equals("user")){
-			try {
-				User u = UrbanSpoonService.getUser(request,response);		
-	     		PrintWriter w = response.getWriter();	
-				w.println("Welcome "+u.getName());		
-			} catch (UrbanspoonException e) {	
-				e.printStackTrace();
-			}
-			}
-			if(request.getParameter("loginAs").equals("restaurant")){
-				try {
-					Restaurant r = UrbanSpoonService.getRestaurant(request, response);		
-		     		PrintWriter w = response.getWriter();	
-					w.println("Welcome "+r.getName());		
-				} catch (UrbanspoonException e) {	
-					e.printStackTrace();
-				}
-				}
-		}
-		
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		try {
-			if (isMultipart) {
+		System.out.println(isMultipart);
+		if (isMultipart) {
 
-				List<FileItem> fileItemsList = UrbanSpoonService.getFileItems(request);
+			ServletFileUpload servletFileUpload = new ServletFileUpload(new DiskFileItemFactory());
+			List<FileItem> fileItemsList;
+			try {
+				fileItemsList = servletFileUpload.parseRequest(request);
 				String action = UrbanSpoonService.getFormFeildValue(fileItemsList, "action");
 				if (action != null) {
 					if (action.equals("restaurant_registration")) {
 						if (UrbanSpoonService.insertRestaurant(fileItemsList, request, response)) {
-							response.sendRedirect("UrbanspoonController");
+							PrintWriter w = response.getWriter();
+							w.println("Restaurant added");
 						}
 					}
 				}
+			} catch (FileUploadException | UrbanspoonException e) {
+				e.printStackTrace();
 			}
-		}catch(Exception e){
-			e.printStackTrace();
+
+		} else {
+			String s = request.getParameter("action");
+			if (s.equals("user_registration")) {
+				try {
+					User u = UrbanSpoonService.insertUser(request, response);
+					System.out.println(u.getId());
+				} catch (UrbanspoonException e) {
+					e.printStackTrace();
+				}
+			}
+			if (s.equals("login")) {
+				if (request.getParameter("loginAs").equals("user")) {
+					try {
+						User u = UrbanSpoonService.getUser(request, response);
+						PrintWriter w = response.getWriter();
+						w.println("Welcome " + u.getName());
+					} catch (UrbanspoonException e) {
+						e.printStackTrace();
+					}
+				}
+				if (request.getParameter("loginAs").equals("restaurant")) {
+					try {
+						Restaurant r = UrbanSpoonService.getRestaurant(request, response);
+						PrintWriter w = response.getWriter();
+						w.println("Welcome " + r.getName());
+					} catch (UrbanspoonException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
+
 	}
 }
